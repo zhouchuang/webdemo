@@ -1,0 +1,1 @@
+package user.zc.models.base;import lombok.Data;import user.zc.utils.BaseEntity;//表名称 searchlog@Datapublic class Searchlog extends BaseEntity {	private static final long serialVersionUID = 1L;	public Searchlog() {		super();	}	    //搜索人(关联用户表主键)    private String userID;    //关键字    private String keyword;    private int  sum;}

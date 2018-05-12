@@ -1,0 +1,22 @@
+package ${packageName}.service;
+
+import user.zc.dao.${className}Dao;
+import user.zc.service.base.AbstractService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ${className}Service extends AbstractService {
+	@Autowired
+    private ${className}Dao ${name}Dao;
+
+	public ${className}Service() {
+		super();
+	}
+
+	@Override
+	public ${className}Dao getDao() {
+		return this.${name}Dao;
+	}
+
+}

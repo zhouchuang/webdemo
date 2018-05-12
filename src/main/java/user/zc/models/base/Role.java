@@ -1,0 +1,1 @@
+package user.zc.models.base;import lombok.Data;import user.zc.utils.BaseEntity;//表名称 role@Datapublic class Role extends BaseEntity {	private static final long serialVersionUID = 1L;	public Role() {		super();	}	    private String name;    private Boolean status;    private String description;}

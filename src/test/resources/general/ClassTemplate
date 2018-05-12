@@ -1,0 +1,18 @@
+package ${packageName}.models;
+
+import lombok.Data;
+
+//表名称 ${tableName}
+
+@Data
+public class ${className} extends BaseEntity {
+
+	private static final long serialVersionUID = 1L;
+
+	public ${className}() {
+		super();
+	}
+	
+${function}
+}
+

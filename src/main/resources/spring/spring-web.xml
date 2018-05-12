@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+
+    <!--切面注入-->
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+    <!--拦截请求到权限校验-->
+    <aop:config proxy-target-class="true"></aop:config>
+    <!-- shiro开启事务注解 -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+
+    <!-- 配置SpringMVC -->
+    <!-- 1.开启SpringMVC注解模式 -->
+    <!-- 简化配置：
+        (1)自动注册DefaultAnootationHandlerMapping,AnotationMethodHandlerAdapter
+        (2)提供一些列：数据绑定，数字和日期的format @NumberFormat, @DateTimeFormat, xml,json默认读写支持
+    -->
+    <mvc:annotation-driven />
+
+    <!-- 第三步：注册处理器映射器/处理器适配器 ，添加conversion-service属性-->
+    <mvc:annotation-driven />
+
+    <!-- 2.静态资源默认servlet配置
+        (1)加入对静态资源的处理：js,gif,png
+        (2)允许使用"/"做整体映射
+     -->
+    <mvc:resources mapping="/css/**" location="/static/css/" />
+    <mvc:resources mapping="/images/**" location="/static/images/" />
+    <mvc:resources mapping="/view/**" location="/static/view/" />
+    <mvc:resources mapping="/js/**" location="/static/js/"/>
+    <mvc:default-servlet-handler/>
+
+
+    <!-- 访问拦截  -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/**"/>
+            <bean class="user.zc.intercepter.LoginHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+    <!-- 3.配置jsp 显示ViewResolver -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 4.扫描web相关的bean配置 -->
+    <context:component-scan base-package="user.zc.controller">
+        <!-- 制定扫包规则 ,只扫描使用@Controller注解的JAVA类 -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--下面设置的是上传文件的最大大小-->
+        <property name="maxUploadSize" value="10000000"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.apache.shiro.authz.UnauthorizedException">/authc/403</prop>
+                <prop key="java.lang.Throwable">/authc/500</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--用注解的方式实现日志的方法-->
+    <bean id="searchRecodeAspect" class="user.zc.aop.SearchRecodeAspect"></bean>
+    <!--spring容器工具-->
+    <bean id="springContextUtil" class="user.zc.utils.SpringContextUtil"></bean>
+</beans>

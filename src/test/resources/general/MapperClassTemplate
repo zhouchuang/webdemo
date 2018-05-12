@@ -1,0 +1,11 @@
+package ${packageName}.dao;
+
+
+import java.util.HashMap;
+import java.util.List;
+import user.zc.models.PageParam;
+
+public interface ${className}Dao extends Dao {
+
+	List<HashMap> queryHashMap (PageParam pageParam);
+}
